@@ -37,19 +37,19 @@
 ##     ++ add "source scripts/spammyBL.tcl" to your eggdrop.conf & rehash. ##
 ##								            ##
 #############################################################################
-##								           ##
+##								            ##
 ##  COMMANDS:                                                              ##
-##								           ##
+##								            ##
 ##  To activate:                                                           ##
 ##  .chanset +nospammy | from BlackTools: .set #channel +nospammy          ##
 ##                                                                         ##
 ##  !rem <IP> - removes an IP from SpammyBlackList.                        ##
 ##              (without *!*@, just digits | eq: !rem 12.12.12.12)         ##
-##								           ##
+##								            ##
 ##  !set [+|-]nospammy.xonly - activate/deactivate X ban support.          ##     
 ##                                                                         ##
 #############################################################################
-##								           ##
+##								            ##
 ##  PERSONAL AND NON-COMMERCIAL USE LIMITATION.                            ##
 ##                                                                         ##
 ##  This program is provided on an "as is" and "as available" basis,       ##
