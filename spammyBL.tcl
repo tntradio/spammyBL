@@ -20,11 +20,11 @@
 ##   nO mOrE SPAM              \.       nO mOrE SPAM nO mOrE SPAM amSP     ##
 ##  nO mOrE SPAM nO mOrE SPAM '    nO mOrE SPAM nO mOrE SPAM nO mOrE SPAM  ## 
 ##                                                                         ##
-##                      - #TCL-HELP @ UNDERNET -     	                   ##
+##                      - #TCL-HELP @ UNDERNET -     	                    ##
 ##                                                                         ##
 #############################################################################
-##								           ##
-##  DESCRIPTION: 						           ##
+##								            ##
+##  DESCRIPTION: 						            ##
 ##  + scans only nicknames having ~ in their idents & only if their        ##
 ##    nickname coincides with their ident.                                 ##
 ##  + bans only if user sends the spam message within 20 seconds of join.  ##
