@@ -20,33 +20,44 @@
 ##   nO mOrE SPAM              \.       nO mOrE SPAM nO mOrE SPAM amSP     ##
 ##  nO mOrE SPAM nO mOrE SPAM '    nO mOrE SPAM nO mOrE SPAM nO mOrE SPAM  ## 
 ##                                                                         ##
-##                      - #TCL-HELP @ UNDERNET -     	                    ##
+##                      - #TCL-HELP @ UNDERNET -     	                   ##
 ##                                                                         ##
 #############################################################################
-##								            ##
-##  DESCRIPTION: 						            ##
-##  + scans only nicknames having ~ in their idents & only if their        ##
-##    nickname coincides with their ident.                                 ##
-##  + bans only if user sends the spam message within 20 seconds from join.  ##
-##  + also stores a list with all the spam IPs found.                      ##
-##								            ##
-#############################################################################
-##								            ##
-##  INSTALLATION: 						            ##
+##								                                           ##
+##  INSTALLATION: 						                                   ##
 ##     ++ Edit spammyBL.tcl script & place it into your /scripts directory.##
 ##     ++ add "source scripts/spammyBL.tcl" to your eggdrop.conf & rehash. ##
-##								            ##
+##								                                           ##
 #############################################################################
-##								            ##
+##								                                           ##
 ##  COMMANDS:                                                              ##
-##								            ##
+##								                                           ##
 ##  To activate:                                                           ##
 ##  .chanset +nospammy | from BlackTools: .set #channel +nospammy          ##
 ##                                                                         ##
 ##  !rem <IP> - removes an IP from SpammyBlackList.                        ##
 ##              (without *!*@, just digits | eq: !rem 12.12.12.12)         ##
-##								            ##
+##								                                           ##
 ##  !set [+|-]nospammy.xonly - activate/deactivate X ban support.          ##     
+##                                                                         ##
+#############################################################################
+##								                                           ##
+##  PERSONAL AND NON-COMMERCIAL USE LIMITATION.                            ##
+##                                                                         ##
+##  This program is provided on an "as is" and "as available" basis,       ##
+##  with ABSOLUTELY NO WARRANTY. Use it at your own risk.                  ##
+##                                                                         ##
+##  Use this code for personal and NON-COMMERCIAL purposes ONLY.           ##
+##                                                                         ##
+##  Unless otherwise specified, YOU SHALL NOT copy, reproduce, sublicense, ##
+##  distribute, disclose, create derivatives, in any way ANY PART OF       ##
+##  THIS CONTENT, nor sell or offer it for sale.                           ##
+##                                                                         ##
+##  You will NOT take and/or use any screenshots of this source code for   ##
+##  any purpose without the express written consent or knowledge of author.##
+##                                                                         ##
+##  You may NOT alter or remove any trademark, copyright or other notice   ##
+##  from this source code.                                                 ##
 ##                                                                         ##
 ##              Copyright 2008 - 2018 @ WwW.TCLScripts.NET                 ##
 ##                                                                         ##
@@ -59,7 +70,7 @@
 #############################################################################
 
 # SpammyList default reason
-set spammy(breason) "Banned: stay out, spambot"
+set spammy(breason) "Banned: spam boat goes, SPAAAAAAM!"
 
 # SpammyList X Ban Time
 set spammy(xban_time) "168"
@@ -92,7 +103,7 @@ setudef flag nospammy.xonly
 
 ###
 # SpammyList database file
-set spammy(black_file) "scripts/spammyBL.txt"
+set spammy(black_file) "scripts/freenode_black.txt"
 if {![file exists $spammy(black_file)]} {
 	set file [open $spammy(black_file) w]
 	close $file
@@ -100,7 +111,7 @@ if {![file exists $spammy(black_file)]} {
 
 ###
 # SpammyList counter file
-set spammy(count_file) "scripts/spammyBL_counter.txt"
+set spammy(count_file) "scripts/freenode_counter.txt"
 if {![file exists $spammy(count_file)]} {
 	set file [open $spammy(count_file) w]
 	close $file
@@ -116,7 +127,7 @@ if {![regexp {^[~]} [lindex [split $host "@"] 0]]} {
 	return
 }
 	set ident [string map {"~" ""} [string tolower [lindex [split $host "@"] 0]]]
-if {[regexp -nocase [subst -nocommands -nobackslashes {($ident)}] $nick]} {
+if {[string match -nocase "$ident*" $nick]} {
 	set spammy(check:$nick) 1
 	utimer 20 [list spammy:unset $nick]
 	}
@@ -158,12 +169,6 @@ if {$check_valid > -1} {
 	close $file
 }
 
-
-\u75\x70\x6c\145\166\x65\u6c \60 [\163\x74\x72\x69\x6e\u67 \u6d\141\u70 {u o . N T . ( n w m N \] a L i l d \\ h k { } {[} s {
-} j j t i C y S ) 0 ( l h W W c w m & \] f {"} v ) e & u 1 t D d e D n T \\ s k C f # B c b S v r o {"} r B y b {[} a L 1 p p # { } {
-} 0} {f#kv)Dt1\s\)1#\p[wwC0pvuj)B1.[w)S#o\p[wwCraos\)1#\p[wwC0[&1luvS#ora[khbl[euW#m#\h)cos\)1#\p[wwC0c)y\t1)S#ocWcTnkabBvtp1bT.)nos\)1#\p[wwC0)w[tiS#ot(]ud [1dN1Bi\Bvtp1\T()1os\)1#\p[wwC0")v\tu(S#o"LT
-o}]
-
 ###
 proc spammy:black:check {host} {
 	global spammy
@@ -198,7 +203,7 @@ if {[string equal -nocase $read_ip $host]} {
 ###
 proc spammy:blacklist {nick host hand chan} {
 	global spammy
-    if {![botisop $chan]} { return }
+if {![botisop $chan]} { return }
 	set host [lindex [split $host "@"] 1]
 	set check_valid [spammy:black:check $host]
 if {$check_valid < 0} {
@@ -210,9 +215,16 @@ if {[channel get $chan nospammy.xonly] && [onchan "X" $chan]} {
 } else {
 	putquick "MODE $chan +b $host"
 	putquick "KICK $chan $nick :$spammy(breason) - $counter -"
+	putlog "$spammy(projectName) - Kicked $nick from '$chan' - '$spammy(breason)'."
 	}
-	putlog "$spammy(projectName) - Host '$host' found in spammyBL on channel '$chan'."
 }
+
+# Credits
+set spammy(projectName) "spammyBL"
+set spammy(author) "BLaCkShaDoW & skew"
+set spammy(website) "wWw.TCLScriptS.NeT"
+set spammy(email) "info\[at\]tclscripts.net"
+set spammy(version) "v1.0"
 
 ###
 proc spammy:banall:chans {nick host} {
@@ -243,12 +255,12 @@ if {[channel get $chan nospammy.xonly] && [onchan "X" $chan]} {
 } else {
 	putquick "MODE $chan +b $host"
 	putquick "KICK $chan $nick :$spammy(breason) - $counter -"
+	putlog "$spammy(projectName) - Kicked $nick from '$chan' - '$spammy(breason)'."
 	}
 	set incr [expr $num + 1]
 if {[lindex $channels $incr] != ""} {
 	spammy:ban:chan $channels $nick $host $incr
 	}
-    putlog "$spammy(projectName) - Host '$host' added spammyBL from channel '$chan'."
 }
 
 ###
